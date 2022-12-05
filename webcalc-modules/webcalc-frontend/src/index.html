@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebCalc</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+
+        let value = 0;
+        let x = 0;
+        let y = 0;
+        let operation = '';
+
+        let appsettings = {}
+
+        let availableUrls = [];
+        let failedUrls = [];
+        init()
+
+        function init() {
+            console.log('In Init');
+            loadJSON(function (response) {
+                appsettings = JSON.parse(response);
+                availableUrls = appsettings['proxyUrls'];
+            });
+
+            setInterval(ReinsertFailedUrls, 10000);
+        }
+
+        function loadJSON(callback) {
+
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', 'appsettings.json', true);
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4 && xobj.status == "200") {
+                    callback(xobj.responseText);
+                }
+            };
+            xobj.send(null);
+        }
+
+        function Display() {
+            document.getElementById('display').value = value;
+        }
+
+        function Clear() {
+            value = 0;
+            x = 0;
+            y = 0;
+            operation = '';
+            Display();
+            HideErrorMessage();
+            HideSuccessMessage();
+        }
+
+        function NumClick(n) {
+            if (value == 0)
+                value = n;
+            else {
+                value *= 10;
+                value += n;
+            }
+
+            Display();
+        }
+
+        function OperatorClicked(operator) {
+            // if we have an outstanding operation resolve it
+            if (operation != '')
+                Equals();
+
+            x = value;
+            value = 0;
+            operation = operator;
+
+            Display();
+        }
+
+        function IsValidResponse(response) {
+            if (response == null) {
+                return false;
+            }
+            else if (response.answer == null || response.string == null || response.error == null) {
+                return false;
+            }
+
+            return true;
+        }
+
+        async function CalculateOperationResult() {
+            var finalResponseData;
+            var finalResponseCode;
+
+            var requestSuccessful = false;
+            while (availableUrls.length > 0 && !requestSuccessful) {
+                await axios.get(`${availableUrls[0]}?x=${x}&y=${y}&operator=${operation}`).then(response => {
+                    finalResponseData = response.data;
+                    finalResponseCode = response.status;
+                }).catch(error => {
+                    var test = error;
+                    if (error.response) {
+                        finalResponseData = error.response.data;
+                        finalResponseCode = error.response.code;
+                    } else {
+                        finfinalResponseCode = 502;
+                        finalResponseData = {
+                            'error': true,
+                            'string': error,
+                            'answer': 0
+                        }
+                    }
+                });
+
+                requestSuccessful = finalResponseCode == 200;
+
+                if (!requestSuccessful) {
+                    failedUrls.push(availableUrls[0]);
+                    availableUrls.shift();
+                }
+            }
+
+            HandleResponseResult(finalResponseData, finalResponseCode);
+
+        }
+
+        function HandleResponseResult(responseData, responseStatusCode) {
+            if (responseStatusCode == 200 && IsValidResponse(responseData)) {
+                var j = responseData;
+                x = 0;
+                y = 0;
+                operation = '';
+                value = j.answer;
+                Display();
+                EnableButtons();
+            }
+            else if (responseStatusCode == 400) {
+                var j = responseData;
+                x = 0;
+                y = 0;
+                operation = '';
+                value = 0;
+
+                ShowErrorMessage('Bad Request - ' + j.string);
+                Display();
+                EnableButtons();
+            }
+            else {
+                x = 0;
+                y = 0;
+                operation = '';
+                value = 0;
+
+                ShowErrorMessage('Unexpected Exception Occurred');
+                Display();
+                EnableButtons();
+            }
+        }
+
+        async function ReinsertFailedUrls() {
+            if (failedUrls.length == 0) return;
+
+            var test_x = 2
+            var test_y = 3
+            var test_operator = 'add';
+
+            var responseCode;
+
+            var urlsToRemoveFromFailed = [];
+
+            for (var i = 0; i < failedUrls.length; i++) {
+                await axios.get(`${failedUrls[i]}?x=${test_x}&y=${test_y}&operator=${test_operator}`).then(response => {
+                    responseCode = response.status;
+                }).catch(error => {
+                    var test = error;
+                    if (error.response) {
+                        responseCode = error.response.code;
+                    } else {
+                        responseCode = 502;
+                    }
+                });
+
+                if (responseCode == 200) {
+                    availableUrls.push(failedUrls[i]);
+                    urlsToRemoveFromFailed.push(failedUrls[i]);
+                }
+            }
+
+            for(var i = 0; i < urlsToRemoveFromFailed.length; i++){
+                var index = failedUrls.indexOf(urlsToRemoveFromFailed[i]);
+                if (index !== -1){
+                    failedUrls.splice(index, 1);
+                }
+            }
+        }
+
+        async function SaveResult() {
+            var data = {
+                result: value
+            };
+
+            var headers = { "Access-Control-Allow-Origin": "*" };
+
+            var requestSuccessful = false;
+            while (availableUrls.length > 0 && !requestSuccessful) {
+                var responseCode;
+
+                await axios.post(`${availableUrls[0]}write`, data)
+                    .then(function (response) {
+                        responseCode = response.status;
+                        ShowSuccessMessage(`Successfully saved result to the Database.\nUnique ID: ${response.data.key}`);
+                    })
+                    .catch(function (error) {
+                        if (error.response) {
+                            responseCode = error.response.code;
+                        }
+                        else {
+                            responseCode = 503;
+                        }
+                        ShowErrorMessage(error);
+                    });
+
+                requestSuccessful = responseCode == 200;
+
+                if (!requestSuccessful) {
+                    failedUrls.push(availableUrls[0]);
+                    availableUrls.shift();
+                }
+            }
+        }
+
+        async function GetResultById() {
+            var id = document.getElementById("find-by-id").value;
+
+            var requestSuccessful = false;
+            while (availableUrls.length > 0 && !requestSuccessful) {
+                var responseCode;
+
+                var url = `${availableUrls[0]}read/?id=${id}`;
+
+                await axios.get(url)
+                    .then(function (response) {
+                        responseCode = response.status;
+                        if (response.data.error){
+                            ShowErrorMessage(response.data.string);
+                        }else{
+                            ShowSuccessMessage(`Successfully read result from the Database. \nValue: ${response.data.result}`);
+                        }
+                    })
+                    .catch(function (error) {
+                        if (error.resonse) {
+                            responseCode = error.response.code;
+                        }
+                        else {
+                            responseCode = 503;
+                        }
+                        ShowErrorMessage(error);
+                    });
+
+                requestSuccessful = responseCode == 200;
+
+                if (!requestSuccessful) {
+                    failedUrls.push(availableUrls[0]);
+                    availableUrls.shift();
+                }
+            }
+        }
+
+        function ShowSuccessMessage(message) {
+            var element = document.getElementById('success-text');
+            element.innerHTML = message;
+            element.style.display = 'block';
+        }
+
+        function HideSuccessMessage(message) {
+            var element = document.getElementById('success-text');
+            element.innerHTML = '';
+            element.style.display = 'none';
+        }
+
+        function ShowErrorMessage(message) {
+            var element = document.getElementById('error-text');
+            element.innerHTML = "Error: " + message;
+            element.style.display = 'block';
+        }
+
+        function HideErrorMessage() {
+            var element = document.getElementById('error-text');
+            element.innerHTML = '';
+            element.style.display = 'none';
+        }
+
+        function DisableButtons() {
+            var element = document.getElementById('loading-text');
+            element.style.display = 'block';
+            var operationRows = document.getElementsByClassName('operation-row');
+            for (var i = 0, all = operationRows.length; i < all; i++) {
+                operationRows[i].classList.add('disabledbutton');
+            }
+        }
+
+        function EnableButtons() {
+            var element = document.getElementById('loading-text');
+            element.style.display = 'none';
+            var operationRows = document.getElementsByClassName('operation-row');
+            for (var i = 0, all = operationRows.length; i < all; i++) {
+                operationRows[i].classList.remove('disabledbutton');
+            }
+        }
+
+        function Equals() {
+            DisableButtons();
+            HideErrorMessage();
+
+            if (operation == ''){
+                EnableButtons();
+                return;
+            }
+                
+
+            y = value;
+
+            CalculateOperationResult();
+        }
+
+    </script>
+
+    <style type="text/css">
+        body {
+            font-size: 150%;
+            font-family: monospace;
+        }
+
+        #logo {
+            font-family: Calibri, sans-serif;
+            font-weight: lighter;
+            color: #505050;
+            margin: 0.5em;
+        }
+
+        #calculator {
+            text-align: center;
+            margin-top: 1em;
+        }
+
+        #error-text {
+            background: lightpink;
+            color: red;
+            padding: 3px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+        }
+
+        #success-text {
+            background: lightgreen;
+            color: green;
+            padding: 3px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+        }
+
+        #display {
+            font-size: 100%;
+            padding: 0.2em;
+            margin: 0.2em;
+            font-family: monospace;
+            letter-spacing: 0.1em;
+        }
+
+        .calc1 {
+            border: solid black 1px;
+            background-color: #f0f0f0;
+            padding: 1.5em;
+            margin: 1em;
+            border-radius: 5px;
+            box-shadow: 1px 2px 2px grey;
+        }
+
+        .disabledbutton {
+            pointer-events: none;
+            opacity: 0.4;
+        }
+
+        .buttonIn {
+            width: 320px;
+            position: relative;
+            display: table;
+            margin: 0 auto;
+            padding-left: 0.2em;
+        }
+
+        #find-by-id {
+            font-size: 100%;
+            padding: 0px;
+
+            /* margin: 0.2em; */
+            font-family: monospace;
+            /* letter-spacing: 0.1em; */
+            width: 80px;
+            margin: 0px;
+            width: 100%;
+            outline: none;
+            height: 30px;
+            border-radius: 5px;
+            font-family: monospace;
+            letter-spacing: 0.1em;
+        }
+
+        #find-by-id-button {
+            position: absolute;
+            top: 0;
+            /* border-radius: 5px; */
+            right: 0px;
+            z-index: 2;
+            border: none;
+            top: 2px;
+            height: 30px;
+            cursor: pointer;
+            color: white;
+            background-color: green;
+            transform: translateX(2px);
+        }
+
+        #find-by-id::-webkit-input-placeholder {
+            font-family: monospace;
+            letter-spacing: 0.1em;
+            font-size: 80%;
+        }
+
+        #find-by-idt:-ms-input-placeholder {
+            font-family: monospace;
+            letter-spacing: 0.1em;
+            font-size: 80%;
+        }
+
+        #find-by-id:-moz-placeholder {
+            font-family: monospace;
+            letter-spacing: 0.1em;
+            font-size: 80%;
+        }
+
+        #find-by-id::-moz-placeholder {
+            font-family: monospace;
+            letter-spacing: 0.1em;
+            font-size: 80%;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="calculator">
+        <div id="logo">
+            Casidave Calcutron
+        </div>
+        <div>
+            <input type="text" id="display" readonly="1" value="">
+        </div>
+        <div id="loading-text" style="display:none">
+            Loading...
+        </div>
+        <divi id="success-text" style="display:none">
+            Success: Example Success
+        </divi>
+        <divi id="error-text" style="display:none">
+            Error: Example Error
+        </divi>
+        <div class="operation-row">
+            <button class="calc1" onclick="Clear();">C</button>
+            <button class="calc1" onclick="OperatorClicked('sqr');">x<sup>2</sup></button>
+            <button class="calc1" onclick="OperatorClicked('div');">/</button>
+            <button class="calc1" onclick="OperatorClicked('mul');">x</button>
+        </div>
+        <div class="operation-row">
+            <button class="calc1" onclick="NumClick(7);">7</button>
+            <button class="calc1" onclick="NumClick(8);">8</button>
+            <button class="calc1" onclick="NumClick(9);">9</button>
+            <button class="calc1" onclick="OperatorClicked('add');">+</button>
+        </div>
+        <div class="operation-row">
+            <button class="calc1" onclick="NumClick(4);">4</button>
+            <button class="calc1" onclick="NumClick(5);">5</button>
+            <button class="calc1" onclick="NumClick(6);">6</button>
+            <button class="calc1" onclick="OperatorClicked('sub');">-</button>
+        </div>
+        <div class="operation-row">
+            <button class="calc1" onclick="NumClick(1);">1</button>
+            <button class="calc1" onclick="NumClick(2);">2</button>
+            <button class="calc1" onclick="NumClick(3);">3</button>
+            <button class="calc1" onclick="Equals();">=</button>
+        </div>
+        <div class="operation-row">
+            <button class="calc1" onclick="NumClick(0);">0</button>
+            <button class="calc1" onclick="OperatorClicked('mod');">mod</button>
+            <button class="calc1" onclick="SaveResult();">Save Result</button>
+        </div>
+        <div class="operation-row">
+            <div class="buttonIn">
+                <input id="find-by-id" type="text" id="enter" placeholder="Find result by unique ID">
+                <button id="find-by-id-button" onclick="GetResultById();">Search</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    value = 1234;
+    Display();
+</script>
+
+</html>

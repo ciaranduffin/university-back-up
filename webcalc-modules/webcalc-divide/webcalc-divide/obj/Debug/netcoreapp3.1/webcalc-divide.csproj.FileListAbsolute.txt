@@ -1,0 +1,40 @@
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.exe
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.deps.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.runtimeconfig.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.runtimeconfig.dev.json
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.dll
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.pdb
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.AssemblyInfoInputs.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.AssemblyInfo.cs
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.RazorTargetAssemblyInfo.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\staticwebassets\webcalc-divide.StaticWebAssets.Manifest.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\staticwebassets\webcalc-divide.StaticWebAssets.xml
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.dll
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.pdb
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.genruntimeconfig.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.csproj.CoreCompileInputs.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ciara\Documents\Cloud Computing\Web Calculator\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.csprojAssemblyReference.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.exe
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.deps.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.runtimeconfig.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.runtimeconfig.dev.json
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.dll
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\bin\Debug\netcoreapp3.1\webcalc-divide.pdb
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.csprojAssemblyReference.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.AssemblyInfoInputs.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.AssemblyInfo.cs
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.csproj.CoreCompileInputs.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.RazorTargetAssemblyInfo.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\staticwebassets\webcalc-divide.StaticWebAssets.Manifest.cache
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\staticwebassets\webcalc-divide.StaticWebAssets.xml
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.dll
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.pdb
+C:\Users\ciara\Documents\Cloud Computing\webcalc-modules\webcalc-divide\webcalc-divide\obj\Debug\netcoreapp3.1\webcalc-divide.genruntimeconfig.cache

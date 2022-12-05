@@ -1,0 +1,9 @@
+image: google/dart:2.10.5
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - pub get
+    - pub run test

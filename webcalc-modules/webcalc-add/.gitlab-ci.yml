@@ -1,0 +1,9 @@
+image: brettt89/silverstripe-web:7.4-apache
+
+test:app:
+  script:
+    - cd src
+    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer require guzzlehttp/guzzle:^6.1 phpunit/phpunit:^5.0
+    - php -S 127.0.0.1:8080 & php vendor/bin/phpunit integrationTest.php
+
